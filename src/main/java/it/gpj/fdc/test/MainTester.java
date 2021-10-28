@@ -19,11 +19,13 @@ public class MainTester {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            String url = Command.APP_PROTOCOL + "://"+TestSignerCommandExecutor.MANAGED_COMMAND;
+            String url = Command.APP_PROTOCOL + "://"+TestSignerCommandExecutor.MANAGED_COMMAND+"?PIN=24061986";
             CommandExecutionManager commandExecutionManager = new CommandExecutionManager();
             Command command = new Command(url);
             commandExecutionManager.executeCommand(command);
             
+            JOptionPane.showMessageDialog(null,"Firma avvenuta correttamente."
+                    ,"Successo",JOptionPane.PLAIN_MESSAGE);
         } catch (MalformedURLException ex) {
             JOptionPane.showMessageDialog(null,"Si è verificato un errore. Comando di esecuzione malformato.\n\n"
                     + "Dettagli Tecnici:\n\n"

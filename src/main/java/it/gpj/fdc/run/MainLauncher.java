@@ -37,6 +37,9 @@ public class MainLauncher {
                 Command command = new Command(url);
                 // Chiedo all'execution manager di eseguire il comando rilevato
                 commandExecutionManager.executeCommand(command);
+                
+                JOptionPane.showMessageDialog(null,"Firma avvenuta correttamente."
+                    ,"Successo",JOptionPane.PLAIN_MESSAGE);
             }
         } catch (CommandExecutorNotFoundException ex) {
             JOptionPane.showMessageDialog(null,"Si è verificato un errore. Comando non supportato.\n\n"

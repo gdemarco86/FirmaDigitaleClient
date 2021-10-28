@@ -28,11 +28,21 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class TestSignerCommandExecutor implements ICommandExecutor {
 
     public static String MANAGED_COMMAND = "testsign";
-
     /**
      * Chiavi dei possibili parametri accettati da questo Executor
      */
-    public static enum Parameters{PIN, INPUT_FILE, OUTPUT_FILE, PIN_MESSAGE}
+    public enum Parameters {
+        PIN("PIN"),
+        INPUT_FILE("INPUT_FILE"),
+        PIN_MESSAGE("PIN"),
+        OUTPUT_FILE("OUTPUT_FILE");
+
+        public final String key;
+
+        private Parameters(String key) {
+            this.key = key;
+        }
+    }
     
     /**
      * Crae un Executor per l'operazione di firma di test
@@ -66,8 +76,8 @@ public class TestSignerCommandExecutor implements ICommandExecutor {
         ProgressBar progressBar = new ProgressBar(true, "Attendi...");
         
         // Se non indicato nei parametri, apro dialog per scelta del file da firmare
-        String inputFile = parameters.containsKey(Parameters.INPUT_FILE) 
-                ? parameters.get(Parameters.INPUT_FILE).toString() 
+        String inputFile = parameters.containsKey(Parameters.INPUT_FILE.key) 
+                ? parameters.get(Parameters.INPUT_FILE.key).toString() 
                 : FormsUtils.chooseFileFromFileSystem(FormsUtils.FileChooserMode.CHOOSE, "Scegli il file da firmare");
         
         if (inputFile != null){
@@ -75,12 +85,12 @@ public class TestSignerCommandExecutor implements ICommandExecutor {
             try{
                 // Se non presente nei parametri, chiedo il pin all'utente
                 String pin = null;
-                if (parameters.containsKey(Parameters.PIN))
-                    pin = parameters.get(Parameters.PIN).toString();
+                if (parameters.containsKey(Parameters.PIN.key))
+                    pin = parameters.get(Parameters.PIN.key).toString();
                 else
                 {
-                    String pinMessage = parameters.containsKey(Parameters.PIN_MESSAGE) 
-                        ? parameters.get(Parameters.PIN_MESSAGE).toString() 
+                    String pinMessage = parameters.containsKey(Parameters.PIN_MESSAGE.key) 
+                        ? parameters.get(Parameters.PIN_MESSAGE.key).toString() 
                         : "Indicare il PIN della smart card: ";
                     String askedPin = FormsUtils.getPasswordFromPanel("Richiesta PIN", pinMessage);
 
@@ -101,23 +111,25 @@ public class TestSignerCommandExecutor implements ICommandExecutor {
                 
                 // Se non presente nei parametri, apro dialog per far scegliere dove salvare il file firmato
                 String outputFile = 
-                    parameters.containsKey(Parameters.OUTPUT_FILE) 
-                    ? parameters.get(Parameters.OUTPUT_FILE).toString() 
+                    parameters.containsKey(Parameters.OUTPUT_FILE.key) 
+                    ? parameters.get(Parameters.OUTPUT_FILE.key).toString() 
                     : FormsUtils.chooseFileFromFileSystem(
                         FormsUtils.FileChooserMode.SAVE,  "Scegli dove salvare il file firmato",
                             new FileNameExtensionFilter("P7M signed files", "p7m"));
                 
-                // Salvo documento firmato in p7m
-                if (!outputFile.endsWith(".p7m"))
-                    outputFile += ".p7m";
-                signResult.saveSignedDocument(outputFile);
+                if (outputFile != null){
+                    // Salvo documento firmato in p7m
+                    if (!outputFile.endsWith(".p7m"))
+                        outputFile += ".p7m";
+                    signResult.saveSignedDocument(outputFile);
+                }
                 
                 return signResult;
             } catch (IncorrectPinException ex) {
                 // In caso di pin errato, ripeto l'operazione passando già l'input file in modo che non 
                 // venga richiesto all'utente
-                parameters.put(Parameters.INPUT_FILE, inputFile);
-                parameters.put(Parameters.PIN_MESSAGE, "PIN Errato. Indicare il PIN della smart card: ");
+                parameters.put(Parameters.INPUT_FILE.key, inputFile);
+                parameters.put(Parameters.PIN_MESSAGE.key, "PIN Errato. Indicare il PIN della smart card: ");
                 this.execute(parameters);
             }
         }
