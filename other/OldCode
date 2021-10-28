@@ -1,0 +1,30 @@
+
+
+Vecchio metodo per cercare le classi con clapper
+
+        ClassFinder finder = new ClassFinder();
+        finder.add(new File(System.getProperty("user.dir")));
+        
+         ClassFilter filter =
+             new AndClassFilter
+                 // Must not be an interface
+                 (//new NotClassFilter (new InterfaceOnlyClassFilter()),
+
+                 // Must implement the ClassFilter interface
+                 //new SubclassClassFilter (ICommandExecutor.class),
+
+                 // Must not be abstract
+                 //new NotClassFilter (new AbstractClassFilter())
+                 );
+
+        Collection<ClassInfo> foundClasses = new ArrayList<ClassInfo>();
+         //finder.findClasses(foundClasses, filter);
+        finder.findClasses(foundClasses);
+        for (ClassInfo classInfo : foundClasses){
+             System.out.println ("Found " + classInfo.getClassName());
+             
+             ICommandExecutor cmdExecutor = (ICommandExecutor)  Class.forName(classInfo.getClassName()).newInstance();
+             if (cmdExecutor.getManagedCommand().equals(command.command)){
+                 return cmdExecutor;
+             }
+        }
