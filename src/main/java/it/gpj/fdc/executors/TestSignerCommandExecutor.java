@@ -25,6 +25,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * file system da firmare e chiedendo poi di salvare il file firmato ottenuto.
  * @author Giovanni
  */
+@Deprecated
 public class TestSignerCommandExecutor implements ICommandExecutor {
 
     public static String MANAGED_COMMAND = "testsign";

@@ -2,6 +2,7 @@ package it.gpj.fdc.executors;
 
 import it.gpj.fdc.documents.Command;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.Set;
 import org.reflections.Reflections;
 
@@ -49,13 +50,16 @@ public class CommandExecutionManager {
         Reflections reflections = new Reflections("it.gpj.fdc.executors");    
         Set<Class<? extends ICommandExecutor>> classes = reflections.getSubTypesOf(ICommandExecutor.class);
         for (Class classInfo : classes){
-             System.out.println ("Found " + classInfo.getName());
+            System.out.println ("Found " + classInfo.getName());
              
-             // Istanzio l'executor e valuto se esegue il comando richiesto
-             ICommandExecutor cmdExecutor = (ICommandExecutor) classInfo.getDeclaredConstructor().newInstance();
-             if (cmdExecutor.getManagedCommand().equals(command.command)){
-                 return cmdExecutor;
-             }
+            int modifiers = classInfo.getModifiers();
+            if (!Modifier.isAbstract(modifiers)) {
+                // Istanzio l'executor e valuto se esegue il comando richiesto
+                ICommandExecutor cmdExecutor = (ICommandExecutor) classInfo.getDeclaredConstructor().newInstance();
+                if (cmdExecutor.getManagedCommand().equals(command.command)){
+                    return cmdExecutor;
+                }
+            }
         }
         return null;
     }

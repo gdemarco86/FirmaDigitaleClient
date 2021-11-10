@@ -3,6 +3,7 @@ package it.gpj.fdc.test;
 import it.gpj.fdc.executors.CommandExecutionManager;
 import it.gpj.fdc.executors.TestSignerCommandExecutor;
 import it.gpj.fdc.documents.Command;
+import it.gpj.fdc.executors.HttpSignerCommandExecutor;
 import it.gpj.fdl.exceptions.DocumentRetrievingException;
 import it.gpj.fdl.exceptions.IncorrectPinException;
 import it.gpj.fdl.exceptions.PKCSException;
@@ -19,7 +20,7 @@ public class MainTester {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            String url = Command.APP_PROTOCOL + "://"+TestSignerCommandExecutor.MANAGED_COMMAND+"?PIN=24061986";
+            String url = Command.APP_PROTOCOL + "://"+HttpSignerCommandExecutor.MANAGED_COMMAND+"?INPUT_URL=https%3A%2F%2Fwww.orimi.com%2Fpdf-test.pdf";
             CommandExecutionManager commandExecutionManager = new CommandExecutionManager();
             Command command = new Command(url);
             commandExecutionManager.executeCommand(command);
